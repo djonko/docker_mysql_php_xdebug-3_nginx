@@ -1,6 +1,7 @@
 FROM php:7.4-fpm
 ARG TIMEZONE
 COPY php-fpm.d/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY php.ini-development /usr/local/etc/php/php.ini
 RUN touch /tmp/xdebug.log \
         && chown www-data:www-data /tmp/xdebug.log \
         && chmod 666 /tmp/xdebug.log
