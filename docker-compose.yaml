@@ -1,13 +1,17 @@
-version: '3'
+version: '3.3'
 services:
   db:
-    image: mysql:8.0.20
+    image: mysql:${MYSQL_VERSION}
+    container_name: db
+    env_file:
+      - .env
     command: --default-authentication-plugin=mysql_native_password
     volumes:
-      #- "/Users/sabadam/BobdiUser/Tmp/MysqlDatad:/var/lib/mysql"
       - "/home/sabadam/BobdiUser/Tmp/MysqlDatad:/var/lib/mysql"
+      - "./var/log:/var/log:rw"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_HOST: ${MYSQL_ROOT_HOST}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
@@ -16,7 +20,12 @@ services:
     networks:
       - symfony
   php-fpm:
-    build: ./php/
+    container_name: php_${APP_NAME}
+    build:
+      context: ./php/
+      dockerfile: Dockerfile
+      args:
+        TIMEZONE: ${TIMEZONE}
     command: "sh -c 'php-fpm -F -R  &>/n & symfony serve'"
     expose:
       - 8000
@@ -60,10 +69,9 @@ services:
   adminer_php:
     image: dockette/adminer:mysql
     ports:
-    - 8006:80
+      - 8006:80
     depends_on:
       - db
-      - php-fpm
     networks:
       - symfony
   inbucket:

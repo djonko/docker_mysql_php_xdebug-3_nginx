@@ -1,4 +1,5 @@
 FROM php:7.4-fpm
+ARG TIMEZONE
 COPY php-fpm.d/www.conf /usr/local/etc/php-fpm.d/www.conf
 RUN touch /tmp/xdebug.log \
         && chown www-data:www-data /tmp/xdebug.log \
@@ -34,6 +35,7 @@ RUN pecl install xdebug \
 RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} > /etc/timezone \
     && printf '[PHP]\ndate.timezone = "%s"\n', ${TIMEZONE} > /usr/local/etc/php/conf.d/tzone.ini \
     && "date"
+
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN  wget https://get.symfony.com/cli/installer -O - | bash
