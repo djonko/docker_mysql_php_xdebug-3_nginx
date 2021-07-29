@@ -77,7 +77,7 @@ services:
   inbucket:
     image: inbucket/inbucket
     container_name: inbucket
-    restart: always
+    #restart: always
     ports:
       - "25:2500"
       - "9004:9000"
